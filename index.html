@@ -959,14 +959,69 @@ function Tools() {
         </div>
       </div>}
       {tool==='compare'&&<div className="card">
-        <div style={{fontWeight:600,marginBottom:16}}>So sánh kênh đầu tư</div>
-        <SliderWithInput label="Số vốn" value={inv.amount} min={50} max={5000} step={50} onChange={v=>setInv(p=>({...p,amount:v}))}/>
-        <SliderWithInput label="Thời gian" value={inv.years} min={1} max={30} step={1} onChange={v=>setInv(p=>({...p,years:v}))} suffix="năm"/>
-        <div style={{marginTop:12}}>
-          {invResults.map(c=><div key={c.name} style={{marginBottom:10,padding:'10px 14px',background:'var(--bg3)',borderRadius:8,border:`1px solid ${c.color}30`}}>
-            <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}><span style={{fontWeight:600}}>{c.name}</span><span style={{fontWeight:700,color:c.color}}>{fmt(c.result)}</span></div>
-            <div style={{fontSize:12,color:'var(--muted)'}}>Lãi {c.rate}%/năm — Lợi nhuận: {fmt(c.result-inv.amount)} (+{((c.result-inv.amount)/inv.amount*100).toFixed(0)}%)</div>
-          </div>)}
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16}}>
+          <div style={{fontWeight:700,fontSize:15}}>So sánh kênh đầu tư</div>
+          <button className="btn btn-primary btn-sm" onClick={addChannel}>+ Thêm kênh</button>
+        </div>
+        <SliderWithInput label="Số vốn ban đầu" value={inv.amount} min={50} max={5000} step={50} onChange={v=>setInv(p=>({...p,amount:v}))}/>
+        <SliderWithInput label="Thời gian đầu tư" value={inv.years} min={1} max={30} step={1} onChange={v=>setInv(p=>({...p,years:v}))} suffix="năm"/>
+
+        {/* Bảng chỉnh sửa kênh */}
+        <div style={{background:'var(--bg4)',borderRadius:10,padding:'12px 14px',marginBottom:14}}>
+          <div style={{fontSize:11,color:'var(--muted)',marginBottom:10,textTransform:'uppercase',letterSpacing:'.5px',fontWeight:700}}>
+            Chỉnh sửa kênh &amp; lãi suất
+          </div>
+          {channels.map((c,i)=>(
+            <div key={c.id} style={{display:'flex',gap:8,alignItems:'center',marginBottom:8}}>
+              <div style={{width:8,height:8,borderRadius:'50%',background:CHAN_COLORS[i%CHAN_COLORS.length],flexShrink:0}}/>
+              <input type="text" value={c.name}
+                onChange={e=>updChannel(c.id,'name',e.target.value)}
+                style={{flex:1,padding:'6px 10px',fontSize:13}}
+                placeholder="Tên kênh"/>
+              <div style={{display:'flex',alignItems:'center',gap:4,flexShrink:0}}>
+                <input type="number" value={c.rate} min={0} max={100} step={0.5}
+                  onChange={e=>updChannel(c.id,'rate',Number(e.target.value))}
+                  style={{width:64,padding:'6px 8px',fontSize:13,textAlign:'right'}}/>
+                <span style={{fontSize:12,color:'var(--muted)',flexShrink:0}}>%/năm</span>
+              </div>
+              {channels.length > 1 && (
+                <button onClick={()=>delChannel(c.id)}
+                  style={{background:'none',border:'none',color:'var(--muted)',cursor:'pointer',fontSize:16,padding:'2px 4px',lineHeight:1,flexShrink:0}}
+                  title="Xóa kênh">×</button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Kết quả so sánh — sắp xếp theo lợi nhuận giảm dần */}
+        <div style={{display:'flex',flexDirection:'column',gap:8}}>
+          {[...invResults].sort((a,b)=>b.result-a.result).map((c,rank)=>{
+            const profit = c.result - inv.amount
+            const pct = inv.amount > 0 ? (profit/inv.amount*100).toFixed(0) : 0
+            return (
+              <div key={c.id} style={{padding:'12px 14px',background:'var(--bg3)',borderRadius:10,border:`1px solid ${c.color}28`,position:'relative',overflow:'hidden'}}>
+                <div style={{position:'absolute',top:0,left:0,bottom:0,width:3,background:c.color,borderRadius:'0 0 0 0'}}/>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:5,paddingLeft:8}}>
+                  <div style={{display:'flex',alignItems:'center',gap:8}}>
+                    {rank===0&&<span style={{fontSize:11,padding:'1px 6px',borderRadius:10,background:`${c.color}25`,color:c.color,fontWeight:700}}>Tốt nhất</span>}
+                    <span style={{fontWeight:700,fontSize:14}}>{c.name}</span>
+                    <span style={{fontSize:11,color:'var(--muted)'}}>{c.rate}%/năm</span>
+                  </div>
+                  <span style={{fontWeight:800,fontSize:16,color:c.color}}>{fmt(c.result)}</span>
+                </div>
+                <div style={{display:'flex',justifyContent:'space-between',fontSize:12,color:'var(--muted)',paddingLeft:8}}>
+                  <span>Lợi nhuận: <span style={{color:c.color,fontWeight:600}}>+{fmt(profit)}</span></span>
+                  <span>Tăng trưởng: <span style={{color:c.color,fontWeight:600}}>+{pct}%</span></span>
+                </div>
+                {/* Progress bar tương đối */}
+                <div style={{marginTop:8,paddingLeft:8}}>
+                  <div style={{background:'var(--bg4)',borderRadius:4,height:4,overflow:'hidden'}}>
+                    <div style={{height:'100%',width:`${Math.min(100,(c.result/invResults[0].result)*100)}%`,background:c.color,borderRadius:4,transition:'width .5s ease'}}/>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>}
     </div>
