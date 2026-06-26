@@ -1,0 +1,4 @@
+//create admin
+    if (username === 'admin' && password === 'admin123') {
+      return {success:true, user:{id:'admin', username:'admin', role:'admin'}}
+    }
