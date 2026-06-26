@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>WEB FINANCE JSC</title>
+<title>Finance JSC</title>
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.23.2/babel.min.js"></script>
@@ -281,7 +281,6 @@ const api = {
   },
   login: async (username, password) => {
     // Admin local luôn hoạt động, không cần Sheets
-
     // User khác → phải có Sheets URL
     if (!hasUrl()) return {success:false, error:'Sai tên đăng nhập hoặc mật khẩu'}
     try {
@@ -449,8 +448,8 @@ function LoginScreen({onLogin}) {
     <div className="login-wrap">
       <div className="login-box">
         <div className="login-logo">💰</div>
-        <h1 style={{textAlign:'center'}}>Dat Finance JSC</h1>
-        <p className="sub" style={{textAlign:'center'}}>Quản lý tài chính cá nhân toàn diện</p>
+        <h1 style={{textAlign:'center'}}>VN Finance</h1>
+        <p className="sub" style={{textAlign:'center'}}>Quản lý dòng tiền cá nhân của bạn</p>
         <form onSubmit={submit}>
           <div className="form-group">
             <label>Tên đăng nhập</label>
@@ -466,7 +465,7 @@ function LoginScreen({onLogin}) {
           </button>
         </form>
         <div style={{marginTop:14,fontSize:11,color:'var(--muted)',textAlign:'center',padding:'8px',background:'var(--bg3)',borderRadius:6}}>
-          Tài khoản: <strong style={{color:'var(--text)'}}>liên hệ tiendat</strong>
+          Tài khoản admin: <strong style={{color:'var(--text)'}}>liên hệ tiendat</strong>
         </div>
       </div>
     </div>
@@ -1287,7 +1286,7 @@ function App() {
       {/* ── Mobile top bar ── */}
       <div id="topbar">
         <button id="ham-btn" onClick={()=>setSbOpen(v=>!v)}>☰</button>
-        <div className="logo-m">💰 FINANCE</div>
+        <div className="logo-m">💰 Dat Finance JSC</div>
         <span style={{fontSize:11,color:syncColors[state.syncStatus]||'var(--green)'}}>● {syncText[state.syncStatus]||'Synced'}</span>
       </div>
 
